@@ -1,0 +1,33 @@
+server:
+  port: 8103
+
+yly:
+  logger:
+    level: 'info'
+  dubbo:
+    registry:
+      #zookeeper注册中心
+      address: 'zookeeper://127.0.0.1:2181'
+
+spring:
+   datasource:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://rm-2zezcsny41h5d5w8d.mysql.rds.aliyuncs.com:3306/yly_finance?autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
+      username: ylyydbprod_rw
+      password: Foad63VSMOajhhQV8xmV
+      initialSize: 5
+      minIdle: 5
+      maxWait: 60000
+      maxActive: 20
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      filters: stat,wall,log4j2
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      useGlobalDataSourceStat: true

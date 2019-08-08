@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<bean name="errorMessageSource" class="com.mseap.framework.i18n.PathMatchReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath*:*/**/errors</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.wondersgroup.com.wondersgroup.yly.dao"/>
+	</bean>
+
+	<!-- 配置myBatis SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeHandlersPackage" value="com.mseap.framework.dac.mybatis3.type"></property>
+		<property name="mapperLocations" value="classpath*:mappers/*.xml" />
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+	</bean>
+
+
+	<!-- 配置Hibernate SessionFactory -->
+	<!--	<bean id="sessionFactory"-->
+	<!--		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">-->
+	<!--		<property name="dataSource" ref="dataSource"></property>-->
+	<!--		<property name="configLocation" value="classpath:hibernate.cfg.xml" />-->
+	<!--		<property name="packagesToScan">-->
+	<!--			<list>-->
+	<!--				<value>com.wondersgroup.com.wondersgroup.yly</value>-->
+	<!--			</list>-->
+	<!--		</property>-->
+	<!--	</bean>-->
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<bean id="defaultDataAccessContextManager"
+		  class="com.mseap.framework.dac.context.DefaultDataAccessContextManager">
+		<property name="contextName" value="default"></property>
+		<property name="transactionContext">
+			<bean class="com.mseap.framework.dac.transaction.SpringTransactionContext">
+				<property name="transactionManager" ref="transactionManager"></property>
+			</bean>
+		</property>
+		<!--<property name="dialects">
+			<list>
+				<bean class="org.hibernate.dialect.MySQLDialect"></bean>
+			</list>
+		</property>-->
+		<property name="dataAccessContexts">
+			<list>
+				<bean class="com.mseap.framework.dac.context.JdbcTemplateContext">
+					<constructor-arg>
+						<bean class="org.springframework.jdbc.core.JdbcTemplate">
+							<property name="dataSource" ref="dataSource"></property>
+						</bean>
+					</constructor-arg>
+				</bean>
+				<!--<bean class="com.mseap.framework.dac.hibernate5.context.HibernateTemplateContext">
+					<constructor-arg>
+						<bean class="org.springframework.orm.hibernate5.HibernateTemplate">
+							<property name="sessionFactory" ref="sessionFactory"></property>
+						</bean>
+					</constructor-arg>
+				</bean>-->
+				<bean class="com.mseap.framework.dac.mybatis3.context.SqlSessionContext">
+					<constructor-arg>
+						<bean class="org.mybatis.spring.SqlSessionTemplate">
+							<constructor-arg ref="sqlSessionFactory"></constructor-arg>
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</property>
+		<property name="dataAccessObjects">
+			<list>
+				<!--				<bean class="com.mseap.framework.dac.hibernate5.dao.JdbcCommonDaoImpl"></bean>-->
+				<!--				<bean class="com.mseap.framework.dac.hibernate5.dao.JdbcQueryDaoImpl"></bean>-->
+				<!--				<bean class="com.mseap.framework.dac.hibernate5.dao.HibernateCommonDaoImpl"></bean>-->
+				<!--				<bean class="com.mseap.framework.dac.hibernate5.dao.HibernateQueryDaoImpl"></bean>-->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataAccessContextManagerFactory"
+		  class="com.mseap.framework.dac.context.DefaultDataAccessContextManagerFactory">
+		<property name="managers">
+			<list>
+				<ref bean="defaultDataAccessContextManager" />
+			</list>
+		</property>
+		<property name="aliasMap">
+			<props>
+				<prop key="sample">default</prop>
+				<prop key="dictionary">default</prop>
+				<prop key="framework">default</prop>
+			</props>
+		</property>
+	</bean>
+	<bean
+			class="com.mseap.framework.dac.annotation.DataAccessAnnotationProcessor">
+		<property name="managerFactory" ref="dataAccessContextManagerFactory"></property>
+	</bean>
+</beans>

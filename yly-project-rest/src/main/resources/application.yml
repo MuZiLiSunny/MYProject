@@ -1,0 +1,83 @@
+server:
+   port: 8102
+   tomcat:
+      max-http-post-size: 5242880
+   session:
+      timeout: 600
+mseaf:
+  application:
+    app-id: lca-web
+    app-name: MSEAF测试应用
+    app-version: 1.0.0-SNAPSHOT
+    server-info: springboot
+    addresses: :8080
+  mvc:
+    exceptionhandler:
+      populateStackTrace: true
+      basePathOfErrorView: errors/
+      stack-trace-filters:
+      - org.springframework.
+      - com.mseap.
+      - com.wondersgroup.
+    session:
+      export:
+        enable: true
+        login-session-attribute: user
+        export-session-attributes: region
+  web:
+    rootMenuId: 100
+  mock:
+    session:
+      enable: true
+      logined-index: redirect:/index.do
+      user-session-attr: user
+      mock-user:
+        authentication-type: loginname
+        login-name: mockuser
+        user-id: -1
+        user-type: mock
+        user-name: 模拟用户
+      mock-attributes:
+        region: test   
+   
+
+
+spring:
+   dubbo:
+      application:
+         name: "com.wondersgroup.yly-medical-rest" ##服务名称
+      registry:
+         address: "zookeeper://127.0.0.1:2181" ##注册中心地址
+      protocol:
+         name: "dubbo"    ## -- dubbo 协议
+         port: 20883
+   freemarker:
+      allow-request-override: false
+      cache: true
+      check-template-location: true
+      charset: UTF-8
+      content-type: text/html
+      request-context-attribute: request
+      expose-request-attributes: false
+      expose-session-attributes: true
+      expose-spring-macro-helpers: false
+   cache:
+      type: caffeine
+      cache-names: mscclib-dictionary
+      caffeine:
+         spec: maximumSize=500,expireAfterWrite=20s
+   jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+   session:
+      store-type: redis
+      redis:
+         flush-mode: on-save
+   redis:
+      host: localhost
+      password: null
+      port: 6379
+
+logging:
+   config: "classpath:logback-spring.xml"
+   level:
+      root: warn,info,error
