@@ -33,7 +33,7 @@
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <lmax-disruptor.version>3.4.2</lmax-disruptor.version>
         <lmax-disruptor-proxy.version>2.0.7</lmax-disruptor-proxy.version>
-        <guava.version>27.0-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <swagger.version>2.9.2</swagger.version>
         <springboot.dubbo.version>2.0.0</springboot.dubbo.version>
         <zkclient.version>0.10</zkclient.version>
